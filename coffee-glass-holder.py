@@ -35,10 +35,7 @@ box -= extrude(sketch, -hole_depth)
 
 # chamfer all edges
 
-chw = 0.6
-box = chamfer(box.edges().group_by(Axis.Z)[-1], length=chw)
-box = chamfer(box.edges().group_by(Axis.Z)[0], length=chw)
-box = chamfer(box.edges().filter_by(Axis.Z), length=chw)
+box = chamfer(box.edges(), length=0.6)
 
 show_object(box)
 
