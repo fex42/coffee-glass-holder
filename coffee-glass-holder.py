@@ -33,4 +33,4 @@ box = chamfer(box.edges().filter_by(Axis.Z), length=chw)
 
 show_object(box)
 
-box .export_step("box.step")
+box .export_step("coffee-glass-holder.step")
