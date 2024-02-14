@@ -16,32 +16,22 @@ length = holes_in_a_row*hole_dist + dist_h
 width = dist_h + row_count * (dist_h + hole_diam)
 height = hole_depth + dist_v
 
-# basic box without holes
-
-box = Box(length=length, width=width, height=height)
-
-# select top face plane
-
-plane = Plane( box.faces().sort_by(Axis.Z).last )
-
-sketch = Sketch() + [
-    plane * loc * Circle(radius=hole_diam/2.0)
-    for loc in GridLocations(hole_dist, hole_dist, holes_in_a_row, row_count)
-]
-
-# extrude holes
-
-box -= extrude(sketch, -hole_depth)
-
-# chamfer all edges
-
-chw = 0.6
-box = chamfer(box.edges().group_by(Axis.Z)[-1], length=chw)
-box = chamfer(box.edges().group_by(Axis.Z)[0], length=chw)
-box = chamfer(box.edges().filter_by(Axis.Z), length=chw)
+with BuildPart() as box:
+    # basic box without holes
+    with BuildSketch() as box_sketch:
+        Rectangle(width=length, height=width)
+    extrude(amount=height)
+    # select top face plane
+    top_face = box.faces().sort_by(Axis.Z).last
+    with BuildSketch(top_face) as holes_sketch:
+        with GridLocations(hole_dist, hole_dist, holes_in_a_row, row_count) as loc:
+            Circle(radius=hole_diam/2.0)
+    extrude(amount=-hole_depth, mode=Mode.SUBTRACT)
+    # add chamfer on all edges
+    chamfer(box.edges(), length=0.6)
 
 show_object(box)
 
 # export as STEP
 
-box .export_step("coffee-glass-holder.step")
+box.part.export_step("coffee-glass-holder.step")
