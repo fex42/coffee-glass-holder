@@ -6,7 +6,7 @@ from build123d import *
 
 hole_diam = 31
 hole_depth = 25
-holes_in_a_row = 6
+holes_in_a_row = 4
 row_count = 2
 dist_h = 5
 dist_v = 1
@@ -41,4 +41,4 @@ show_object(box)
 
 # export as STEP
 
-box .export_step("coffee-glass-holder.step")
+export_step(box, "coffee-glass-holder.step")
